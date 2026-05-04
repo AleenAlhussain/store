@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../ask_ai/views/ask_ai_view.dart';
 import '../../home/views/home_view.dart';
 import '../../lessons/views/lessons_view.dart';
+import '../../profile/views/profile_view.dart';
+import '../../schedule/views/schedule_view.dart';
 import '../controllers/main_nav_controller.dart';
 
 class MainNavView extends GetView<MainNavController> {
@@ -12,9 +15,9 @@ class MainNavView extends GetView<MainNavController> {
   static const _pages = [
     HomeView(),
     LessonsView(),
-    _PlaceholderView(label: 'Ask AI', icon: Icons.psychology_outlined),
-    _PlaceholderView(label: 'Lab', icon: Icons.science_outlined),
-    _PlaceholderView(label: 'Profile', icon: Icons.person_outline),
+    AskAiView(),
+    ScheduleView(),
+    ProfileView(),
   ];
 
   @override
@@ -33,7 +36,6 @@ class MainNavView extends GetView<MainNavController> {
   }
 }
 
-// ── Custom nav bar matching the Figma design ──────────────────────────────────
 class _QuantumNavBar extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onTap;
@@ -89,13 +91,11 @@ class _QuantumNavBar extends StatelessWidget {
                   Text(
                     item.label,
                     style: TextStyle(
-                      color:
-                          isActive ? AppColors.purple : AppColors.textMuted,
+                      color: isActive ? AppColors.purple : AppColors.textMuted,
                       fontSize: 8,
                       letterSpacing: 0.8,
-                      fontWeight: isActive
-                          ? FontWeight.w700
-                          : FontWeight.w400,
+                      fontWeight:
+                          isActive ? FontWeight.w700 : FontWeight.w400,
                     ),
                   ),
                 ],
@@ -103,42 +103,6 @@ class _QuantumNavBar extends StatelessWidget {
             ),
           );
         }),
-      ),
-    );
-  }
-}
-
-// ── Placeholder for unimplemented tabs ───────────────────────────────────────
-class _PlaceholderView extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  const _PlaceholderView({required this.label, required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.bgBase,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: AppColors.textMuted, size: 48),
-            const SizedBox(height: 16),
-            Text(
-              label,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Coming soon',
-              style: TextStyle(color: AppColors.textMuted, fontSize: 13),
-            ),
-          ],
-        ),
       ),
     );
   }

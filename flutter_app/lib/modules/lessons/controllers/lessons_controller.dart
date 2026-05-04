@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import '../../../app/routes/app_routes.dart';
 import '../../../data/models/chapter_model.dart';
 import '../../../data/repositories/chemai_repository.dart';
 
@@ -28,6 +29,6 @@ class LessonsController extends GetxController {
   }
 
   void resumeChapter(ChapterModel chapter) {
-    // Navigate to lesson detail
+    Get.toNamed(AppRoutes.quiz);
   }
 }
