@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
 import '../../ask_ai/views/ask_ai_view.dart';
+import '../../flashcards/views/flashcards_view.dart';
 import '../../home/views/home_view.dart';
 import '../../lessons/views/lessons_view.dart';
-import '../../profile/views/profile_view.dart';
-import '../../schedule/views/schedule_view.dart';
+import '../../pilot_profile/views/pilot_profile_view.dart';
 import '../controllers/main_nav_controller.dart';
 
 class MainNavView extends GetView<MainNavController> {
@@ -16,8 +16,8 @@ class MainNavView extends GetView<MainNavController> {
     HomeView(),
     LessonsView(),
     AskAiView(),
-    ScheduleView(),
-    ProfileView(),
+    FlashcardsView(),
+    PilotProfileView(),
   ];
 
   @override
