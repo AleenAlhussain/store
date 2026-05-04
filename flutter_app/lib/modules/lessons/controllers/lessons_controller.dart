@@ -29,6 +29,6 @@ class LessonsController extends GetxController {
   }
 
   void resumeChapter(ChapterModel chapter) {
-    Get.toNamed(AppRoutes.quiz);
+    Get.toNamed(AppRoutes.lessonDetail);
   }
 }

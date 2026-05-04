@@ -15,7 +15,7 @@ class _Action {
 const _actions = [
   _Action(Icons.quiz_outlined, 'DAILY QUIZ', AppRoutes.quiz),
   _Action(Icons.science_outlined, 'LAB', AppRoutes.lab),
-  _Action(Icons.style_outlined, 'CARDS', null),
+  _Action(Icons.style_outlined, 'CARDS', AppRoutes.flashcards),
   _Action(Icons.psychology_outlined, 'AI HELP', null),
 ];
 
