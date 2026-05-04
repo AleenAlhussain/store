@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../../modules/auth/bindings/auth_binding.dart';
+import '../../modules/auth/views/auth_view.dart';
 import '../../modules/home/bindings/home_binding.dart';
 import '../../modules/lessons/bindings/lessons_binding.dart';
 import '../../modules/main_nav/bindings/main_nav_binding.dart';
@@ -8,6 +10,10 @@ import '../../modules/mentor/bindings/mentor_binding.dart';
 import '../../modules/mentor/views/mentor_view.dart';
 import '../../modules/onboarding/bindings/onboarding_binding.dart';
 import '../../modules/onboarding/views/onboarding_view.dart';
+import '../../modules/profile/bindings/profile_binding.dart';
+import '../../modules/quiz/bindings/quiz_binding.dart';
+import '../../modules/quiz/views/quiz_view.dart';
+import '../../modules/schedule/bindings/schedule_binding.dart';
 import '../../modules/splash/bindings/splash_binding.dart';
 import '../../modules/splash/views/splash_view.dart';
 import 'app_routes.dart';
@@ -19,6 +25,13 @@ abstract final class AppPages {
       page: () => const SplashView(),
       binding: SplashBinding(),
       transition: Transition.noTransition,
+    ),
+    GetPage(
+      name: AppRoutes.auth,
+      page: () => const AuthView(),
+      binding: AuthBinding(),
+      transition: Transition.fadeIn,
+      transitionDuration: const Duration(milliseconds: 400),
     ),
     GetPage(
       name: AppRoutes.onboarding,
@@ -41,9 +54,18 @@ abstract final class AppPages {
         MainNavBinding(),
         HomeBinding(),
         LessonsBinding(),
+        ProfileBinding(),
+        ScheduleBinding(),
       ],
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 400),
+    ),
+    GetPage(
+      name: AppRoutes.quiz,
+      page: () => const QuizView(),
+      binding: QuizBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: const Duration(milliseconds: 300),
     ),
   ];
 }

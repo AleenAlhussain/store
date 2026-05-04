@@ -46,10 +46,13 @@ class SplashController extends GetxController {
 
   Future<void> _navigate() async {
     final prefs = await SharedPreferences.getInstance();
+    final loggedIn  = prefs.getBool('logged_in') ?? false;
     final onboarded = prefs.getBool('onboarding_done') ?? false;
     final mentorSet = prefs.getString('mentor_id') != null;
 
-    if (!onboarded) {
+    if (!loggedIn) {
+      Get.offAllNamed(AppRoutes.auth);
+    } else if (!onboarded) {
       Get.offAllNamed(AppRoutes.onboarding);
     } else if (!mentorSet) {
       Get.offAllNamed(AppRoutes.mentor);

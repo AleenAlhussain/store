@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:get/get.dart';
 
+import '../../../../app/routes/app_routes.dart';
 import '../../../../app/theme/app_colors.dart';
 
 class _Action {
   final IconData icon;
   final String label;
-  const _Action(this.icon, this.label);
+  final String? route;
+  const _Action(this.icon, this.label, this.route);
 }
 
 const _actions = [
-  _Action(Icons.quiz_outlined, 'DAILY QUIZ'),
-  _Action(Icons.science_outlined, 'LAB'),
-  _Action(Icons.style_outlined, 'CARDS'),
-  _Action(Icons.psychology_outlined, 'AI HELP'),
+  _Action(Icons.quiz_outlined, 'DAILY QUIZ', AppRoutes.quiz),
+  _Action(Icons.science_outlined, 'LAB', AppRoutes.lab),
+  _Action(Icons.style_outlined, 'CARDS', null),
+  _Action(Icons.psychology_outlined, 'AI HELP', null),
 ];
 
 class QuickActionGrid extends StatelessWidget {
@@ -41,7 +44,7 @@ class _ActionItem extends StatelessWidget {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: () => action.route != null ? Get.toNamed(action.route!) : null,
           child: Container(
             width: 58,
             height: 58,
