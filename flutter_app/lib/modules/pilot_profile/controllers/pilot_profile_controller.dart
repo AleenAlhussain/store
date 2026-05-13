@@ -31,6 +31,7 @@ class PilotProfileController extends GetxController {
 
   void handleSettingTap(String icon) {
     if (icon == 'theme') _theme.toggle();
+    if (icon == 'mentor') Get.toNamed(AppRoutes.mentor);
   }
 
   Future<void> disconnect() async {
