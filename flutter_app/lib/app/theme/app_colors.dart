@@ -1,59 +1,69 @@
 import 'package:flutter/material.dart';
 
+// ──────────────────────────────────────────────────────────────────────────────
+// AppColors — all properties are static getters backed by `isDark`.
+// Set `AppColors.isDark` before triggering a rebuild to switch palettes.
+// ──────────────────────────────────────────────────────────────────────────────
 abstract final class AppColors {
-  // ── Backgrounds ────────────────────────────────────────────────────────────
-  static const bgDeep    = Color(0xFF080C20);  // darkest navy
-  static const bgBase    = Color(0xFF0C1030);  // main scaffold
-  static const bgCard    = Color(0xFF131840);  // card surface
-  static const bgCardAlt = Color(0xFF1A1F4A);  // slightly lighter card
+  static bool isDark = true;
 
-  // ── Brand accents ──────────────────────────────────────────────────────────
-  static const cyan      = Color(0xFF00D4FF);
-  static const cyanDim   = Color(0xFF00A8CC);
-  static const purple    = Color(0xFF7C5CFC);
-  static const purpleLight = Color(0xFFA688FF);
-  static const purpleDim  = Color(0xFF4A3C8C);
-  static const green     = Color(0xFF00E5A0);
-  static const greenDim  = Color(0xFF007A55);
-
-  // ── Text ──────────────────────────────────────────────────────────────────
-  static const textPrimary   = Color(0xFFFFFFFF);
-  static const textSecondary = Color(0xFF8B90B0);
-  static const textMuted     = Color(0xFF4A5080);
-  static const textCyan      = Color(0xFF00D4FF);
-
-  // ── Borders / dividers ────────────────────────────────────────────────────
-  static const borderDefault  = Color(0xFF2A2F60);
-  static const borderSelected = Color(0xFF4E6EFF);
-  static const borderGlow     = Color(0xFF00D4FF);
-
-  // ── Status ────────────────────────────────────────────────────────────────
-  static const online  = Color(0xFF00E5A0);
-  static const locked  = Color(0xFF4A5080);
+  // ── Semantic constants (theme-invariant) ───────────────────────────────────
+  static const amber  = Color(0xFFFBBF24); // level / achievement gold
+  static const danger = Color(0xFFEF4444); // destructive actions
   static const warning = Color(0xFFFBBF24);
 
+  // ── Backgrounds ────────────────────────────────────────────────────────────
+  static Color get bgDeep    => isDark ? const Color(0xFF070A1C) : const Color(0xFFDDE1FF);
+  static Color get bgBase    => isDark ? const Color(0xFF0C0F2A) : const Color(0xFFECEDFF);
+  static Color get bgCard    => isDark ? const Color(0xFF121638) : const Color(0xFFFFFFFF);
+  static Color get bgCardAlt => isDark ? const Color(0xFF181D48) : const Color(0xFFF4F5FF);
+
+  // ── Brand accents ──────────────────────────────────────────────────────────
+  static Color get purple      => isDark ? const Color(0xFF8B7DF8) : const Color(0xFF6366F1);
+  static Color get purpleLight => isDark ? const Color(0xFFB5A8FF) : const Color(0xFF818CF8);
+  static Color get purpleDim   => isDark ? const Color(0xFF3D3280) : const Color(0xFFE0E7FF);
+  static Color get cyan        => isDark ? const Color(0xFF22D3EE) : const Color(0xFF0891B2);
+  static Color get cyanDim     => isDark ? const Color(0xFF0891B2) : const Color(0xFFBAE6FD);
+  static Color get green       => isDark ? const Color(0xFF34D399) : const Color(0xFF10B981);
+  static Color get greenDim    => isDark ? const Color(0xFF065F46) : const Color(0xFFD1FAE5);
+
+  // ── Text ──────────────────────────────────────────────────────────────────
+  static Color get textPrimary   => isDark ? const Color(0xFFF0F2FF) : const Color(0xFF0D1035);
+  static Color get textSecondary => isDark ? const Color(0xFF8B92B8) : const Color(0xFF475569);
+  static Color get textMuted     => isDark ? const Color(0xFF464D7A) : const Color(0xFF94A3B8);
+  static Color get textCyan      => cyan;
+
+  // ── Borders ───────────────────────────────────────────────────────────────
+  static Color get borderDefault  => isDark ? const Color(0xFF1E2458) : const Color(0xFFC7CCEF);
+  static Color get borderSelected => isDark ? const Color(0xFF6366F1) : const Color(0xFF6366F1);
+  static Color get borderGlow     => cyan;
+
+  // ── Status ────────────────────────────────────────────────────────────────
+  static Color get online => green;
+  static Color get locked => isDark ? const Color(0xFF464D7A) : const Color(0xFF94A3B8);
+
   // ── Gradients ─────────────────────────────────────────────────────────────
-  static const gradientPurple = LinearGradient(
-    colors: [Color(0xFF7C5CFC), Color(0xFF5B8BFF)],
+  static LinearGradient get gradientPurple => LinearGradient(
+    colors: [purple, isDark ? const Color(0xFF5B8BFF) : const Color(0xFF818CF8)],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
 
-  static const gradientCyan = LinearGradient(
-    colors: [Color(0xFF00D4FF), Color(0xFF0099CC)],
+  static LinearGradient get gradientCyan => LinearGradient(
+    colors: [cyan, cyanDim],
     begin: Alignment.centerLeft,
     end: Alignment.centerRight,
   );
 
-  static const gradientCard = LinearGradient(
-    colors: [Color(0xFF131840), Color(0xFF1A1F4A)],
+  static LinearGradient get gradientCard => LinearGradient(
+    colors: [bgCard, bgCardAlt],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
-  static const gradientBg = RadialGradient(
+  static RadialGradient get gradientBg => RadialGradient(
     center: Alignment.center,
     radius: 1.2,
-    colors: [Color(0xFF0C1030), Color(0xFF080C20)],
+    colors: [bgBase, bgDeep],
   );
 }
