@@ -1,6 +1,7 @@
 abstract final class AppRoutes {
   static const splash     = '/';
   static const auth       = '/auth';
+  static const signup     = '/signup';
   static const onboarding = '/onboarding';
   static const mentor     = '/mentor';
   static const mainNav    = '/main';
