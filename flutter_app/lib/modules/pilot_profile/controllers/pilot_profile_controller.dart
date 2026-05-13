@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/routes/app_routes.dart';
+import '../../../core/controllers/theme_controller.dart';
 
 class PilotProfileController extends GetxController {
   final name = 'Commander Alex Vance';
@@ -11,13 +12,19 @@ class PilotProfileController extends GetxController {
   final planExpiry = 'Elite access until Oct 2025';
   final version = 'Version 4.9.2-Quantum';
 
-  final settings = const [
-    (icon: 'account', label: 'Account Details', trailing: ''),
-    (icon: 'privacy', label: 'Privacy & Security', trailing: ''),
-    (icon: 'alerts', label: 'Transmission Alerts', trailing: 'Active'),
-    (icon: 'theme', label: 'Interface Theme', trailing: 'Deep Space'),
-    (icon: 'support', label: 'Navigation Support', trailing: ''),
-  ];
+  ThemeController get _theme => Get.find<ThemeController>();
+
+  List<({String icon, String label, String trailing})> get settings => [
+        (icon: 'account', label: 'Account Details', trailing: ''),
+        (icon: 'privacy', label: 'Privacy & Security', trailing: ''),
+        (icon: 'alerts', label: 'Transmission Alerts', trailing: 'Active'),
+        (icon: 'theme', label: 'Interface Theme', trailing: _theme.label),
+        (icon: 'support', label: 'Navigation Support', trailing: ''),
+      ];
+
+  void handleSettingTap(String icon) {
+    if (icon == 'theme') _theme.toggle();
+  }
 
   Future<void> disconnect() async {
     final prefs = await SharedPreferences.getInstance();

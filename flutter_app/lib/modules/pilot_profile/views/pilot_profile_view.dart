@@ -204,28 +204,29 @@ class PilotProfileView extends GetView<PilotProfileController> {
 
             const SizedBox(height: 10),
 
-            Container(
-              decoration: BoxDecoration(
-                color: AppColors.bgCard,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: AppColors.borderDefault),
-              ),
-              child: Column(
-                children: List.generate(
-                  controller.settings.length,
-                  (i) {
-                    final s = controller.settings[i];
-                    final isLast = i == controller.settings.length - 1;
-                    return _SettingsRow(
-                      icon: _iconFor(s.icon),
-                      label: s.label,
-                      trailing: s.trailing,
-                      showDivider: !isLast,
-                    );
-                  },
-                ),
-              ),
-            ),
+            Obx(() => Container(
+                  decoration: BoxDecoration(
+                    color: AppColors.bgCard,
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(color: AppColors.borderDefault),
+                  ),
+                  child: Column(
+                    children: List.generate(
+                      controller.settings.length,
+                      (i) {
+                        final s = controller.settings[i];
+                        final isLast = i == controller.settings.length - 1;
+                        return _SettingsRow(
+                          icon: _iconFor(s.icon),
+                          label: s.label,
+                          trailing: s.trailing,
+                          showDivider: !isLast,
+                          onTap: () => controller.handleSettingTap(s.icon),
+                        );
+                      },
+                    ),
+                  ),
+                )),
 
             const SizedBox(height: 32),
 
@@ -295,12 +296,14 @@ class _SettingsRow extends StatelessWidget {
   final String label;
   final String trailing;
   final bool showDivider;
+  final VoidCallback onTap;
 
   const _SettingsRow({
     required this.icon,
     required this.label,
     required this.trailing,
     required this.showDivider,
+    required this.onTap,
   });
 
   @override
@@ -308,7 +311,7 @@ class _SettingsRow extends StatelessWidget {
     return Column(
       children: [
         GestureDetector(
-          onTap: () {},
+          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
