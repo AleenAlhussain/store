@@ -108,7 +108,12 @@ class FlashcardsView extends GetView<FlashcardsController> {
                 const SizedBox(width: 16),
 
                 // Flashcard
-                Expanded(child: Obx(() => _FlipCard(controller: controller))),
+                Expanded(
+                  child: Obx(() {
+                    controller.currentIndex.value; // subscribe to card changes
+                    return _FlipCard(controller: controller);
+                  }),
+                ),
 
                 const SizedBox(width: 16),
 
@@ -186,14 +191,18 @@ class _CardFront extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'QUANTUM STATE: ${card.state}',
-                style: const TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 9,
-                  letterSpacing: 1.5,
+              Expanded(
+                child: Text(
+                  'QUANTUM STATE: ${card.state}',
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 9,
+                    letterSpacing: 1.5,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               Row(
                 children: List.generate(
                     3,
@@ -303,14 +312,18 @@ class _CardBack extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'QUANTUM STATE: ${card.state}',
-                style: const TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 9,
-                  letterSpacing: 1.5,
+              Expanded(
+                child: Text(
+                  'QUANTUM STATE: ${card.state}',
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 9,
+                    letterSpacing: 1.5,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 8, vertical: 3),

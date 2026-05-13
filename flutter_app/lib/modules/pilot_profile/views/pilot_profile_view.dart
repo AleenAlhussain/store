@@ -285,6 +285,7 @@ class PilotProfileView extends GetView<PilotProfileController> {
       'privacy' => Icons.shield_outlined,
       'alerts' => Icons.notifications_outlined,
       'theme' => Icons.palette_outlined,
+      'mentor' => Icons.school_outlined,
       'support' => Icons.help_outline_rounded,
       _ => Icons.chevron_right,
     };

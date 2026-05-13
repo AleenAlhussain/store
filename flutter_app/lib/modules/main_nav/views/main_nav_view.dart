@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../core/controllers/theme_controller.dart';
 import '../../ask_ai/views/ask_ai_view.dart';
 import '../../flashcards/views/flashcards_view.dart';
 import '../../home/views/home_view.dart';
@@ -12,27 +13,32 @@ import '../controllers/main_nav_controller.dart';
 class MainNavView extends GetView<MainNavController> {
   const MainNavView({super.key});
 
-  static const _pages = [
-    HomeView(),
-    LessonsView(),
-    AskAiView(),
-    FlashcardsView(),
-    PilotProfileView(),
-  ];
+  // Non-const so Flutter rebuilds children when the theme changes.
+  static List<Widget> get _pages => [
+        HomeView(),
+        LessonsView(),
+        AskAiView(),
+        FlashcardsView(),
+        PilotProfileView(),
+      ];
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => Scaffold(
-          backgroundColor: AppColors.bgBase,
-          body: IndexedStack(
-            index: controller.currentIndex.value,
-            children: _pages,
-          ),
-          bottomNavigationBar: _QuantumNavBar(
-            currentIndex: controller.currentIndex.value,
-            onTap: controller.changeTab,
-          ),
-        ));
+    final tc = Get.find<ThemeController>();
+    return Obx(() {
+      tc.isDark.value; // subscribe — triggers full rebuild on theme toggle
+      return Scaffold(
+        backgroundColor: AppColors.bgBase,
+        body: IndexedStack(
+          index: controller.currentIndex.value,
+          children: _pages,
+        ),
+        bottomNavigationBar: _QuantumNavBar(
+          currentIndex: controller.currentIndex.value,
+          onTap: controller.changeTab,
+        ),
+      );
+    });
   }
 }
 

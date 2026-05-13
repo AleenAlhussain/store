@@ -1,5 +1,7 @@
 import 'package:get/get.dart';
 
+import '../../../core/services/mentor_service.dart';
+import '../../../data/models/mentor_model.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/repositories/chemai_repository.dart';
 
@@ -9,6 +11,10 @@ class HomeController extends GetxController {
   final user = Rxn<UserModel>();
   final isLoading = true.obs;
 
+  MentorService get _mentorSvc => Get.find<MentorService>();
+  Rxn<MentorModel> get mentor => _mentorSvc.current;
+  String get greeting => _mentorSvc.greeting;
+
   @override
   void onReady() {
     super.onReady();
@@ -16,11 +22,9 @@ class HomeController extends GetxController {
   }
 
   Future<void> _loadProfile() async {
-    // Show mock data immediately for fluid UX
     user.value = UserModel.mock;
     isLoading.value = false;
 
-    // Then try live data
     final result = await _repo.fetchProfile();
     if (result.data != null) user.value = result.data;
   }

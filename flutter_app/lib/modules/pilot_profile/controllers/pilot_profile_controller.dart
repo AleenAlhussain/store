@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../../../core/controllers/theme_controller.dart';
+import '../../../core/services/mentor_service.dart';
 
 class PilotProfileController extends GetxController {
   final name = 'Commander Alex Vance';
@@ -13,12 +14,18 @@ class PilotProfileController extends GetxController {
   final version = 'Version 4.9.2-Quantum';
 
   ThemeController get _theme => Get.find<ThemeController>();
+  MentorService get _mentor => Get.find<MentorService>();
 
   List<({String icon, String label, String trailing})> get settings => [
         (icon: 'account', label: 'Account Details', trailing: ''),
         (icon: 'privacy', label: 'Privacy & Security', trailing: ''),
         (icon: 'alerts', label: 'Transmission Alerts', trailing: 'Active'),
         (icon: 'theme', label: 'Interface Theme', trailing: _theme.label),
+        (
+          icon: 'mentor',
+          label: 'Active Mentor',
+          trailing: _mentor.current.value?.name ?? 'None selected'
+        ),
         (icon: 'support', label: 'Navigation Support', trailing: ''),
       ];
 

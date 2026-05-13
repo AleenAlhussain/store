@@ -15,26 +15,36 @@ class AskAiView extends GetView<AskAiController> {
       appBar: AppBar(
         backgroundColor: AppColors.bgBase,
         titleSpacing: 16,
-        leading: Padding(
-          padding: const EdgeInsets.all(10),
-          child: Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.bgCard,
-              border: Border.all(color: AppColors.borderDefault),
+        leading: Obx(() {
+          final mentor = controller.mentor.value;
+          return Padding(
+            padding: const EdgeInsets.all(10),
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.bgCard,
+                border: Border.all(color: AppColors.borderDefault),
+              ),
+              child: mentor != null
+                  ? Center(
+                      child: Text(mentor.iconAsset,
+                          style: const TextStyle(fontSize: 16)))
+                  : const Icon(Icons.person_outline,
+                      color: AppColors.textSecondary, size: 18),
             ),
-            child:
-                const Icon(Icons.person_outline, color: AppColors.textSecondary, size: 18),
-          ),
-        ),
-        title: const Text(
-          'Quantum AI Tutor',
-          style: TextStyle(
-            color: AppColors.textPrimary,
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
+          );
+        }),
+        title: Obx(() {
+          final mentor = controller.mentor.value;
+          return Text(
+            mentor != null ? '${mentor.name} • AI Tutor' : 'Quantum AI Tutor',
+            style: const TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
+          );
+        }),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined,
@@ -47,55 +57,68 @@ class AskAiView extends GetView<AskAiController> {
         children: [
           // Messages list
           Expanded(
-            child: Obx(() => ListView.builder(
-                  controller: controller.scrollController,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  itemCount: controller.messages.length +
-                      (controller.isTyping.value ? 1 : 0),
-                  itemBuilder: (_, i) {
-                    if (i == controller.messages.length &&
-                        controller.isTyping.value) {
-                      return const _TypingIndicator();
-                    }
-                    return _MessageBubble(msg: controller.messages[i]);
-                  },
-                )),
+            child: Obx(() {
+              final label = controller.botLabel; // subscribe to mentor changes
+              return ListView.builder(
+                controller: controller.scrollController,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                itemCount: controller.messages.length +
+                    (controller.isTyping.value ? 1 : 0),
+                itemBuilder: (_, i) {
+                  if (i == controller.messages.length &&
+                      controller.isTyping.value) {
+                    return const _TypingIndicator();
+                  }
+                  return _MessageBubble(
+                      msg: controller.messages[i], botLabel: label);
+                },
+              );
+            }),
           ),
 
-          // Teaching style toggle
-          Container(
-            color: AppColors.bgBase,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Obx(() => Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      'TEACHING STYLE:',
+          // Mentor info bar
+          Obx(() {
+            final mentor = controller.mentor.value;
+            if (mentor == null) return const SizedBox.shrink();
+            return Container(
+              color: AppColors.bgBase,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(mentor.iconAsset,
+                      style: const TextStyle(fontSize: 13)),
+                  const SizedBox(width: 8),
+                  Text(
+                    mentor.name.toUpperCase(),
+                    style: TextStyle(
+                      color: AppColors.purple,
+                      fontSize: 10,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                      width: 1, height: 12, color: AppColors.borderDefault),
+                  const SizedBox(width: 8),
+                  Flexible(
+                    child: Text(
+                      mentor.description,
                       style: TextStyle(
                         color: AppColors.textMuted,
                         fontSize: 10,
-                        letterSpacing: 1.5,
+                        letterSpacing: 0.3,
                       ),
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    const SizedBox(width: 12),
-                    _StyleChip(
-                      label: 'Socratic',
-                      icon: Icons.psychology_outlined,
-                      active: controller.teachingStyle.value == 'Socratic',
-                      onTap: () => controller.setStyle('Socratic'),
-                    ),
-                    const SizedBox(width: 8),
-                    _StyleChip(
-                      label: 'Direct',
-                      icon: Icons.flash_on_outlined,
-                      active: controller.teachingStyle.value == 'Direct',
-                      onTap: () => controller.setStyle('Direct'),
-                    ),
-                  ],
-                )),
-          ),
+                  ),
+                ],
+              ),
+            );
+          }),
 
           // Input bar
           Container(
@@ -159,7 +182,8 @@ class AskAiView extends GetView<AskAiController> {
 
 class _MessageBubble extends StatelessWidget {
   final ChatMessage msg;
-  const _MessageBubble({required this.msg});
+  final String botLabel;
+  const _MessageBubble({required this.msg, required this.botLabel});
 
   @override
   Widget build(BuildContext context) {
@@ -169,9 +193,9 @@ class _MessageBubble extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'QUANTUM_BOT v4.2',
-              style: TextStyle(
+            Text(
+              botLabel,
+              style: const TextStyle(
                 color: AppColors.textMuted,
                 fontSize: 10,
                 letterSpacing: 1.2,
@@ -353,53 +377,3 @@ class _DotRowState extends State<_DotRow> with SingleTickerProviderStateMixin {
   }
 }
 
-class _StyleChip extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final bool active;
-  final VoidCallback onTap;
-
-  const _StyleChip({
-    required this.label,
-    required this.icon,
-    required this.active,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: active ? AppColors.purple : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: active ? AppColors.purple : AppColors.borderDefault,
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon,
-                size: 13,
-                color: active
-                    ? Colors.white
-                    : AppColors.textMuted),
-            const SizedBox(width: 5),
-            Text(
-              label,
-              style: TextStyle(
-                color: active ? Colors.white : AppColors.textMuted,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

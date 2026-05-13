@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/routes/app_routes.dart';
+import '../../../core/services/mentor_service.dart';
 import '../../../data/models/mentor_model.dart';
 import '../../../data/repositories/chemai_repository.dart';
 
@@ -19,7 +19,6 @@ class MentorController extends GetxController {
   }
 
   Future<void> _loadMentors() async {
-    // Seed with local data immediately for instant UI, then try API
     mentors.value = MentorModel.defaults;
 
     final result = await _repo.fetchMentors();
@@ -42,8 +41,7 @@ class MentorController extends GetxController {
 
     isLoading.value = true;
     await _repo.selectMentor(selectedId.value!);
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('mentor_id', selectedId.value!);
+    await Get.find<MentorService>().setMentor(selectedId.value!);
     isLoading.value = false;
 
     Get.offAllNamed(AppRoutes.mainNav);

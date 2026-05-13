@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../core/services/mentor_service.dart';
 import '../../../data/models/chat_message_model.dart';
+import '../../../data/models/mentor_model.dart';
 
 class AskAiController extends GetxController {
   final messages = <ChatMessage>[].obs;
   final messageController = TextEditingController();
-  final isTyping = true.obs;
-  final teachingStyle = 'Socratic'.obs;
+  final isTyping = false.obs;
   final scrollController = ScrollController();
+
+  MentorService get _mentor => Get.find<MentorService>();
+  Rxn<MentorModel> get mentor => _mentor.current;
+  String get botLabel => _mentor.botLabel;
 
   @override
   void onInit() {
@@ -16,8 +21,7 @@ class AskAiController extends GetxController {
     messages.addAll([
       ChatMessage(
         id: '1',
-        content:
-            'Let\'s look at the reaction between Hydrogen and Oxygen.\n\n2H₂ + O₂ → 2H₂O',
+        content: _mentor.chatOpener,
         isBot: true,
         time: '14:00',
       ),
@@ -50,16 +54,12 @@ class AskAiController extends GetxController {
 
     messages.add(ChatMessage(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
-      content: teachingStyle.value == 'Socratic'
-          ? 'Interesting question! What do you think happens when atoms share electrons between two non-metals? 🤔'
-          : 'That\'s a covalent bond. Hydrogen and oxygen share electrons to form water molecules.',
+      content: _mentor.responseFor(text),
       isBot: true,
       time: _now(),
     ));
     _scrollToBottom();
   }
-
-  void setStyle(String style) => teachingStyle.value = style;
 
   String _now() {
     final t = DateTime.now();
