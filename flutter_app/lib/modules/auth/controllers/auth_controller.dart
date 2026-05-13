@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/routes/app_routes.dart';
-import '../../../core/services/mentor_service.dart';
 
 class AuthController extends GetxController {
   final emailController = TextEditingController();
@@ -30,9 +29,9 @@ class AuthController extends GetxController {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('logged_in', true);
     await prefs.setBool('onboarding_done', true);
-    await Get.find<MentorService>().setMentor('gamer');
+    await prefs.remove('mentor_id');
     isLoading.value = false;
-    Get.offAllNamed(AppRoutes.mainNav);
+    Get.offAllNamed(AppRoutes.mentor);
   }
 
   void togglePasswordVisibility() =>
