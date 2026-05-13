@@ -18,6 +18,7 @@ class HomeView extends GetView<HomeController> {
       appBar: _buildAppBar(),
       body: Obx(() {
         final user = controller.user.value;
+        final mentor = controller.mentor.value; // subscribe to mentor changes
         if (user == null) {
           return const Center(
               child: CircularProgressIndicator(color: AppColors.purple));
@@ -53,6 +54,19 @@ class HomeView extends GetView<HomeController> {
               ).animate().fadeIn(duration: 400.ms),
 
               const SizedBox(height: 6),
+
+              // Mentor greeting line
+              if (mentor != null) ...[
+                Text(
+                  '${mentor.iconAsset}  ${controller.greeting}',
+                  style: TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ).animate().fadeIn(delay: 60.ms, duration: 300.ms),
+                const SizedBox(height: 4),
+              ],
 
               // Heading
               RichText(
