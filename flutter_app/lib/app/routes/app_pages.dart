@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../../modules/auth/bindings/auth_binding.dart';
 import '../../modules/auth/views/auth_view.dart';
+import '../../modules/signup/bindings/signup_binding.dart';
+import '../../modules/signup/views/signup_view.dart';
 import '../../modules/flashcards/bindings/flashcards_binding.dart';
 import '../../modules/flashcards/views/flashcards_view.dart';
 import '../../modules/home/bindings/home_binding.dart';
@@ -37,6 +39,13 @@ abstract final class AppPages {
       binding: AuthBinding(),
       transition: Transition.fadeIn,
       transitionDuration: const Duration(milliseconds: 400),
+    ),
+    GetPage(
+      name: AppRoutes.signup,
+      page: () => const SignupView(),
+      binding: SignupBinding(),
+      transition: Transition.rightToLeft,
+      transitionDuration: const Duration(milliseconds: 350),
     ),
     GetPage(
       name: AppRoutes.onboarding,

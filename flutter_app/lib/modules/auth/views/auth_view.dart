@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 
+import '../../../app/routes/app_routes.dart';
 import '../../../app/theme/app_colors.dart';
 import '../controllers/auth_controller.dart';
 
@@ -305,7 +306,7 @@ class AuthView extends GetView<AuthController> {
                               color: AppColors.textSecondary, fontSize: 13),
                         ),
                         GestureDetector(
-                          onTap: () {},
+                          onTap: () => Get.toNamed(AppRoutes.signup),
                           child: const Text(
                             'Sign Up',
                             style: TextStyle(
