@@ -191,14 +191,18 @@ class _CardFront extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'QUANTUM STATE: ${card.state}',
-                style: const TextStyle(
-                  color: AppColors.textMuted,
-                  fontSize: 9,
-                  letterSpacing: 1.5,
+              Expanded(
+                child: Text(
+                  'QUANTUM STATE: ${card.state}',
+                  style: const TextStyle(
+                    color: AppColors.textMuted,
+                    fontSize: 9,
+                    letterSpacing: 1.5,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
+              const SizedBox(width: 8),
               Row(
                 children: List.generate(
                     3,
