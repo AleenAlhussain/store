@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 
 import '../../../app/routes/app_routes.dart';
+import '../../../core/controllers/theme_controller.dart';
 import '../../../core/services/mentor_service.dart';
 import '../../../data/models/mentor_model.dart';
 import '../../../data/repositories/chemai_repository.dart';
@@ -41,9 +42,16 @@ class MentorController extends GetxController {
 
     isLoading.value = true;
     await _repo.selectMentor(selectedId.value!);
-    await Get.find<MentorService>().setMentor(selectedId.value!);
-    isLoading.value = false;
+    final mentorSvc = Get.find<MentorService>();
+    await mentorSvc.setMentor(selectedId.value!);
 
+    // Sync theme variant to match the selected character
+    final variant = mentorSvc.current.value?.themeVariant;
+    if (variant != null) {
+      Get.find<ThemeController>().setVariant(variant);
+    }
+
+    isLoading.value = false;
     Get.offAllNamed(AppRoutes.mainNav);
   }
 }

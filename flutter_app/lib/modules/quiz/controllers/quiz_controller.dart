@@ -8,8 +8,10 @@ class QuizController extends GetxController {
   final questions = QuizQuestion.defaults;
   final currentIndex = 0.obs;
   final selectedOption = RxnString();
+  final submitted = false.obs;
   final secondsRemaining = 45.obs;
   final isCorrect = RxnBool();
+  final score = 450.obs;
   Timer? _timer;
 
   QuizQuestion get current => questions[currentIndex.value];
@@ -33,9 +35,15 @@ class QuizController extends GetxController {
   }
 
   void selectOption(String letter) {
-    if (selectedOption.value != null) return;
+    if (submitted.value) return;
     selectedOption.value = letter;
-    isCorrect.value = letter == current.correctLetter;
+  }
+
+  void submitAnswer() {
+    if (selectedOption.value == null || submitted.value) return;
+    submitted.value = true;
+    isCorrect.value = selectedOption.value == current.correctLetter;
+    if (isCorrect.value == true) score.value += 50;
     Future.delayed(const Duration(milliseconds: 1800), _advance);
   }
 
@@ -44,6 +52,7 @@ class QuizController extends GetxController {
       currentIndex.value++;
       selectedOption.value = null;
       isCorrect.value = null;
+      submitted.value = false;
       _startTimer();
     } else {
       Get.back();

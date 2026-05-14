@@ -1,66 +1,67 @@
+import '../../app/theme/app_colors.dart';
+
 class MentorModel {
   final String id;
   final String name;
+  final String role;
   final String description;
-  final String iconAsset; // or emoji / icon code
+  final String iconAsset;
 
   const MentorModel({
     required this.id,
     required this.name,
     required this.description,
     required this.iconAsset,
+    this.role = '',
   });
+
+  AppThemeVariant get themeVariant => switch (id) {
+        'luna'  => AppThemeVariant.luna,
+        'milo'  => AppThemeVariant.milo,
+        'sunny' => AppThemeVariant.sunny,
+        _       => AppThemeVariant.quantum,
+      };
 
   factory MentorModel.fromJson(Map<String, dynamic> j) => MentorModel(
         id: j['id'] as String,
         name: j['name'] as String,
+        role: j['role'] as String? ?? '',
         description: j['description'] as String,
         iconAsset: j['icon'] as String? ?? '',
       );
 
-  // Local seed data matching the Figma design
   static List<MentorModel> get defaults => const [
         MentorModel(
-          id: 'professor',
-          name: 'The Professor',
+          id: 'tutor',
+          name: 'Tutor',
+          role: 'The Expert',
           description:
-              'Rigorous, detailed, and evidence-based approach to complex structures.',
+              'Your wise AI Guide. Perfect for mastering complex equations and big concepts!',
           iconAsset: '🎓',
         ),
         MentorModel(
-          id: 'gamer',
-          name: 'The Gamer',
+          id: 'luna',
+          name: 'Luna',
+          role: 'Fun & Curious',
           description:
-              'High energy, quest-based learning with real-time XP and achievements.',
+              'Learning with Luna is like a game! She loves making chemistry feel like magic!',
+          iconAsset: '🌸',
+        ),
+        MentorModel(
+          id: 'milo',
+          name: 'Milo',
+          role: 'Problem Solver',
+          description:
+              "Milo is ready to solve cool problems with you! He's the ultimate lab partner.",
           iconAsset: '🎮',
         ),
         MentorModel(
-          id: 'visionary',
-          name: 'The Visionary',
+          id: 'sunny',
+          name: 'Sunny',
+          role: 'The Explainer',
           description:
-              'Concept-focused with sci-fi analogies and future-tech implications.',
-          iconAsset: '🚀',
-        ),
-        MentorModel(
-          id: 'minimalist',
-          name: 'The Minimalist',
-          description:
-              'Straight to the point. No fluff, just pure chemical fundamentals.',
-          iconAsset: '⚡',
-        ),
-        MentorModel(
-          id: 'storyteller',
-          name: 'The Storyteller',
-          description:
-              'Narrative-driven lessons connecting atoms to human history.',
-          iconAsset: '📖',
-        ),
-        MentorModel(
-          id: 'lab_partner',
-          name: 'The Lab Partner',
-          description:
-              "Collaborative, casual environment. We're learning this together.",
-          iconAsset: '⚗️',
+              "Sunny loves to explain things step-by-step. He's patient, bright, and always encouraging!",
+          iconAsset: '☀️',
         ),
       ];
 }

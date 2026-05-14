@@ -6,14 +6,17 @@ class QuizOption {
   const QuizOption({
     required this.letter,
     required this.name,
-    required this.detail,
+    this.detail = '',
   });
 }
 
 class QuizQuestion {
   final int number;
   final int total;
+  final String category;
   final String question;
+  final String keyword;
+  final String birdHint;
   final String hint;
   final String hintSymbol;
   final List<QuizOption> options;
@@ -23,59 +26,77 @@ class QuizQuestion {
   const QuizQuestion({
     required this.number,
     required this.total,
+    required this.category,
     required this.question,
-    required this.hint,
-    required this.hintSymbol,
+    required this.birdHint,
     required this.options,
     required this.correctLetter,
-    required this.configLabel,
+    this.keyword = '',
+    this.hint = '',
+    this.hintSymbol = '',
+    this.configLabel = '',
   });
 
   static List<QuizQuestion> get defaults => const [
         QuizQuestion(
           number: 4,
           total: 10,
-          question: 'Which element has the atomic number 1?',
-          hint: 'Lightest and most abundant element in the universe.',
-          hintSymbol: 'H',
+          category: 'ATOMIC BONDING',
+          question:
+              'Which of these elements is most likely to form a Covalent Bond with Oxygen?',
+          keyword: 'Covalent Bond',
+          birdHint:
+              "You're doing great! This one is all about how atoms stick together. Think about shared electrons!",
+          hint: 'Covalent bonds form between non-metals sharing electrons.',
+          hintSymbol: 'O',
           options: [
-            QuizOption(letter: 'A', name: 'Helium', detail: 'Atomic Mass: 4.0026'),
-            QuizOption(letter: 'B', name: 'Hydrogen', detail: 'Atomic Mass: 1.0078'),
-            QuizOption(letter: 'C', name: 'Lithium', detail: 'Atomic Mass: 6.941'),
-            QuizOption(letter: 'D', name: 'Beryllium', detail: 'Atomic Mass: 9.0122'),
+            QuizOption(letter: 'A', name: 'Sodium (Na)'),
+            QuizOption(letter: 'B', name: 'Carbon (C)'),
+            QuizOption(letter: 'C', name: 'Magnesium (Mg)'),
+            QuizOption(letter: 'D', name: 'Potassium (K)'),
           ],
           correctLetter: 'B',
-          configLabel: '1s¹ Configuration',
+          configLabel: 'C: [He] 2s² 2p²',
         ),
         QuizQuestion(
           number: 5,
           total: 10,
-          question: 'What is the chemical symbol for Gold?',
-          hint: 'This element has been prized throughout human history.',
-          hintSymbol: 'Au',
+          category: 'PERIODIC TABLE',
+          question:
+              'What is the Atomic Number of the element Carbon?',
+          keyword: 'Atomic Number',
+          birdHint:
+              'Atomic number tells us how many protons are in the nucleus. Carbon is in Period 2!',
+          hint: 'Carbon is the backbone of all organic chemistry.',
+          hintSymbol: 'C',
           options: [
-            QuizOption(letter: 'A', name: 'Go', detail: 'Atomic Mass: N/A'),
-            QuizOption(letter: 'B', name: 'Gd', detail: 'Atomic Mass: 157.25'),
-            QuizOption(letter: 'C', name: 'Au', detail: 'Atomic Mass: 196.97'),
-            QuizOption(letter: 'D', name: 'Ag', detail: 'Atomic Mass: 107.87'),
+            QuizOption(letter: 'A', name: '4'),
+            QuizOption(letter: 'B', name: '6'),
+            QuizOption(letter: 'C', name: '8'),
+            QuizOption(letter: 'D', name: '12'),
           ],
-          correctLetter: 'C',
-          configLabel: '[Xe] 4f¹⁴ 5d¹⁰ 6s¹',
+          correctLetter: 'B',
+          configLabel: 'C: [He] 2s² 2p²',
         ),
         QuizQuestion(
           number: 6,
           total: 10,
-          question: 'Which bond involves the sharing of two electron pairs?',
-          hint: 'Think about the bond order in O₂.',
-          hintSymbol: 'O₂',
+          category: 'CHEMICAL REACTIONS',
+          question:
+              'What type of reaction releases energy in the form of heat?',
+          keyword: 'releases energy',
+          birdHint:
+              'Think about hand warmers — they get hot when they react. That release is the key!',
+          hint: 'Think about what happens with burning or hand warmers.',
+          hintSymbol: '🔥',
           options: [
-            QuizOption(letter: 'A', name: 'Single Bond', detail: '1 shared pair'),
-            QuizOption(letter: 'B', name: 'Double Bond', detail: '2 shared pairs'),
-            QuizOption(letter: 'C', name: 'Triple Bond', detail: '3 shared pairs'),
-            QuizOption(letter: 'D', name: 'Ionic Bond', detail: 'Electron transfer'),
+            QuizOption(letter: 'A', name: 'Endothermic'),
+            QuizOption(letter: 'B', name: 'Decomposition'),
+            QuizOption(letter: 'C', name: 'Exothermic'),
+            QuizOption(letter: 'D', name: 'Neutralization'),
           ],
-          correctLetter: 'B',
-          configLabel: 'σ + π bond geometry',
+          correctLetter: 'C',
+          configLabel: 'ΔH < 0 (negative)',
         ),
       ];
 }

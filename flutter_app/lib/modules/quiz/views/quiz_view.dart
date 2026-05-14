@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../core/controllers/theme_controller.dart';
+import '../../../widgets/mascot_bird.dart';
 import '../controllers/quiz_controller.dart';
 
 class QuizView extends GetView<QuizController> {
@@ -9,282 +11,276 @@ class QuizView extends GetView<QuizController> {
 
   @override
   Widget build(BuildContext context) {
+    final variant = Get.find<ThemeController>().variant.value;
     return Scaffold(
       backgroundColor: AppColors.bgBase,
-      appBar: _buildAppBar(context),
+      appBar: _buildAppBar(),
       body: Obx(() {
         final q = controller.current;
-        return SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Progress + timer row
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Progress header ──────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'QUESTION ${q.number} OF ${q.total}',
-                    style: const TextStyle(
-                      color: AppColors.textMuted,
-                      fontSize: 11,
-                      letterSpacing: 1.2,
-                      fontWeight: FontWeight.w600,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Question ${q.number} of ${q.total}',
+                        style: TextStyle(
+                          color: AppColors.purple,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      Text(
+                        'Level 5',
+                        style: const TextStyle(
+                          color: AppColors.textSecondary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: LinearProgressIndicator(
+                      value: q.number / q.total,
+                      minHeight: 8,
+                      backgroundColor: AppColors.purpleDim,
+                      color: AppColors.purple,
                     ),
                   ),
-                  Obx(() => Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: AppColors.bgCard,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: AppColors.borderDefault),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.timer_outlined,
-                                color: AppColors.textSecondary, size: 14),
-                            const SizedBox(width: 5),
-                            Text(
-                              controller.timerLabel,
-                              style: TextStyle(
-                                color: controller.secondsRemaining.value < 10
-                                    ? AppColors.warning
-                                    : AppColors.textPrimary,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
+                  const SizedBox(height: 16),
+                  // Bird hint
+                  _BirdHintRow(hint: q.birdHint, variant: variant),
+                  const SizedBox(height: 8),
                 ],
               ),
+            ),
 
-              const SizedBox(height: 20),
-
-              // Question
-              RichText(
-                text: TextSpan(
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    height: 1.4,
-                  ),
-                  children: _buildQuestionSpans(q.question),
-                ),
-              ),
-
-              const SizedBox(height: 16),
-
-              // Hint card
-              Container(
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: const Color(0xFF0D2035),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                      color: AppColors.cyan.withOpacity(0.25)),
-                ),
-                child: Row(
+            // ── Scrollable question + answers ────────────────────────────
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Question card
                     Container(
-                      width: 36,
-                      height: 36,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: AppColors.bgCardAlt,
-                        borderRadius: BorderRadius.circular(8),
-                        border: Border.all(
-                            color: AppColors.borderDefault),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        q.hintSymbol,
-                        style: const TextStyle(
-                          color: AppColors.cyan,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'PERIODIC HINT',
-                            style: TextStyle(
-                              color: AppColors.cyan,
-                              fontSize: 9,
-                              letterSpacing: 1.5,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          const SizedBox(height: 3),
-                          Text(
-                            q.hint,
-                            style: const TextStyle(
-                              color: AppColors.textSecondary,
-                              fontSize: 12,
-                              height: 1.4,
-                            ),
+                        color: AppColors.bgCard,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.06),
+                            blurRadius: 16,
+                            offset: const Offset(0, 4),
                           ),
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 18),
-
-              // 2x2 answer grid
-              Obx(() => GridView.count(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 1.45,
-                    children: q.options.map((opt) {
-                      final selected =
-                          controller.selectedOption.value == opt.letter;
-                      final answered =
-                          controller.selectedOption.value != null;
-                      final correct =
-                          opt.letter == q.correctLetter;
-
-                      Color borderColor;
-                      Color bgColor;
-                      if (!answered) {
-                        borderColor = AppColors.borderDefault;
-                        bgColor = AppColors.bgCard;
-                      } else if (correct) {
-                        borderColor = AppColors.green;
-                        bgColor =
-                            AppColors.green.withOpacity(0.12);
-                      } else if (selected) {
-                        borderColor = Colors.red.shade400;
-                        bgColor =
-                            Colors.red.shade400.withOpacity(0.12);
-                      } else {
-                        borderColor = AppColors.borderDefault;
-                        bgColor = AppColors.bgCard;
-                      }
-
-                      return GestureDetector(
-                        onTap: () => controller.selectOption(opt.letter),
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          padding: const EdgeInsets.all(14),
-                          decoration: BoxDecoration(
-                            color: bgColor,
-                            borderRadius: BorderRadius.circular(14),
-                            border:
-                                Border.all(color: borderColor, width: 1.5),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 26,
-                                    height: 26,
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: selected && !correct
-                                          ? Colors.red.shade400
-                                              .withOpacity(0.2)
-                                          : correct && answered
-                                              ? AppColors.green
-                                                  .withOpacity(0.2)
-                                              : AppColors.bgCardAlt,
-                                      border: Border.all(
-                                          color: borderColor
-                                              .withOpacity(0.5)),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      opt.letter,
-                                      style: TextStyle(
-                                        color: correct && answered
-                                            ? AppColors.green
-                                            : AppColors.textSecondary,
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                  const Spacer(),
-                                  if (correct && answered)
-                                    const Icon(Icons.check_circle,
-                                        color: AppColors.green, size: 18),
-                                ],
-                              ),
-                              const SizedBox(height: 8),
+                              Icon(Icons.science_outlined,
+                                  color: AppColors.textMuted, size: 14),
+                              const SizedBox(width: 6),
                               Text(
-                                opt.name,
-                                style: const TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(height: 2),
-                              Text(
-                                opt.detail,
-                                style: const TextStyle(
-                                  color: AppColors.textSecondary,
+                                q.category,
+                                style: TextStyle(
+                                  color: AppColors.textMuted,
                                   fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: 1.2,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      );
-                    }).toList(),
-                  )),
-
-              const SizedBox(height: 18),
-
-              // Molecular visualization
-              Container(
-                width: double.infinity,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF080C1A),
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: AppColors.borderDefault),
-                ),
-                clipBehavior: Clip.antiAlias,
-                child: Stack(
-                  children: [
-                    // Faint molecular lines
-                    CustomPaint(
-                      size: Size.infinite,
-                      painter: _MolecularPainter(),
-                    ),
-                    Positioned(
-                      bottom: 10,
-                      left: 14,
-                      child: Text(
-                        q.configLabel,
-                        style: const TextStyle(
-                          color: AppColors.textSecondary,
-                          fontSize: 12,
-                          fontFamily: 'monospace',
-                          letterSpacing: 0.5,
-                        ),
+                          const SizedBox(height: 12),
+                          _buildQuestionText(q.question, q.keyword),
+                        ],
                       ),
                     ),
+
+                    const SizedBox(height: 16),
+
+                    // Answer options (vertical list)
+                    Obx(() => Column(
+                          children: q.options.map((opt) {
+                            final selected =
+                                controller.selectedOption.value == opt.letter;
+                            final isSubmitted = controller.submitted.value;
+                            final correct = opt.letter == q.correctLetter;
+
+                            Color bg;
+                            Color border;
+                            Color textColor;
+                            Color letterBg;
+                            Color letterText;
+
+                            if (!isSubmitted) {
+                              bg = selected ? AppColors.purple : AppColors.bgCard;
+                              border = selected ? AppColors.purple : AppColors.borderDefault;
+                              textColor = selected ? Colors.white : AppColors.textPrimary;
+                              letterBg = selected
+                                  ? Colors.white.withOpacity(0.2)
+                                  : AppColors.purpleDim;
+                              letterText = selected ? Colors.white : AppColors.purple;
+                            } else if (correct) {
+                              bg = AppColors.green.withOpacity(0.12);
+                              border = AppColors.green;
+                              textColor = AppColors.textPrimary;
+                              letterBg = AppColors.green.withOpacity(0.2);
+                              letterText = AppColors.green;
+                            } else if (selected) {
+                              bg = Colors.red.shade50;
+                              border = Colors.red.shade400;
+                              textColor = AppColors.textPrimary;
+                              letterBg = Colors.red.shade100;
+                              letterText = Colors.red.shade400;
+                            } else {
+                              bg = AppColors.bgCard;
+                              border = AppColors.borderDefault;
+                              textColor = AppColors.textSecondary;
+                              letterBg = AppColors.purpleDim;
+                              letterText = AppColors.textMuted;
+                            }
+
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: GestureDetector(
+                                onTap: () => controller.selectOption(opt.letter),
+                                child: AnimatedContainer(
+                                  duration: const Duration(milliseconds: 250),
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 16),
+                                  decoration: BoxDecoration(
+                                    color: bg,
+                                    borderRadius: BorderRadius.circular(16),
+                                    border: Border.all(color: border, width: 1.5),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.04),
+                                        blurRadius: 8,
+                                        offset: const Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 36,
+                                        height: 36,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: letterBg,
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: isSubmitted && correct
+                                            ? Icon(Icons.check_rounded,
+                                                color: AppColors.green, size: 18)
+                                            : Text(
+                                                opt.letter,
+                                                style: TextStyle(
+                                                  color: letterText,
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w800,
+                                                ),
+                                              ),
+                                      ),
+                                      const SizedBox(width: 14),
+                                      Text(
+                                        opt.name,
+                                        style: TextStyle(
+                                          color: textColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                        )),
+
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),
+            ),
+          ],
+        );
+      }),
 
-              const SizedBox(height: 30),
+      // ── Submit button (fixed at bottom) ──────────────────────────────────
+      bottomNavigationBar: Obx(() {
+        final canSubmit = controller.selectedOption.value != null &&
+            !controller.submitted.value;
+        return Container(
+          padding: EdgeInsets.fromLTRB(
+              18, 12, 18, 12 + MediaQuery.of(context).padding.bottom),
+          color: AppColors.bgBase,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: double.infinity,
+                child: AnimatedOpacity(
+                  opacity: canSubmit ? 1.0 : 0.5,
+                  duration: const Duration(milliseconds: 200),
+                  child: ElevatedButton(
+                    onPressed: canSubmit ? controller.submitAnswer : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.purple,
+                      disabledBackgroundColor: AppColors.purple,
+                      padding: const EdgeInsets.symmetric(vertical: 18),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      elevation: 0,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Text(
+                          'Submit Answer',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        Icon(Icons.arrow_forward_rounded,
+                            color: Colors.white, size: 18),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'TAP TO CONFIRM YOUR CHOICE',
+                style: TextStyle(
+                  color: AppColors.textMuted,
+                  fontSize: 10,
+                  letterSpacing: 1.2,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ],
           ),
         );
@@ -292,120 +288,156 @@ class QuizView extends GetView<QuizController> {
     );
   }
 
-  List<TextSpan> _buildQuestionSpans(String q) {
-    // Bold the keyword "atomic number" if present
-    const keyword = 'atomic number';
-    final idx = q.toLowerCase().indexOf(keyword);
-    if (idx == -1) return [TextSpan(text: q)];
-    return [
-      TextSpan(text: q.substring(0, idx)),
-      TextSpan(
-        text: q.substring(idx, idx + keyword.length),
-        style: const TextStyle(
-          fontWeight: FontWeight.w800,
-          decoration: TextDecoration.underline,
+  Widget _buildQuestionText(String question, String keyword) {
+    if (keyword.isEmpty) {
+      return Text(
+        question,
+        style: TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          height: 1.5,
         ),
-      ),
-      TextSpan(text: q.substring(idx + keyword.length)),
-    ];
-  }
+      );
+    }
 
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return AppBar(
-      backgroundColor: AppColors.bgBase,
-      titleSpacing: 16,
-      leading: const SizedBox.shrink(),
-      leadingWidth: 0,
-      title: Row(
+    final idx = question.toLowerCase().indexOf(keyword.toLowerCase());
+    if (idx == -1) {
+      return Text(question,
+          style: TextStyle(
+              color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w700, height: 1.5));
+    }
+
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(
+          color: AppColors.textPrimary,
+          fontSize: 18,
+          fontWeight: FontWeight.w700,
+          height: 1.5,
+        ),
         children: [
-          const Icon(Icons.science_outlined,
-              color: AppColors.purple, size: 18),
-          const SizedBox(width: 6),
-          const Text(
-            'QUANTUM CHEMISTRY',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 1.5,
-            ),
+          TextSpan(text: question.substring(0, idx)),
+          TextSpan(
+            text: question.substring(idx, idx + keyword.length),
+            style: TextStyle(color: AppColors.purple),
           ),
-          const SizedBox(width: 16),
-          GestureDetector(
-            onTap: () {},
-            child: const Text('Lab',
-                style: TextStyle(
-                    color: AppColors.purple,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600)),
-          ),
-          const SizedBox(width: 12),
-          GestureDetector(
-            onTap: () {},
-            child: const Text('Lessons',
-                style: TextStyle(
-                    color: AppColors.purple,
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600)),
-          ),
+          TextSpan(text: question.substring(idx + keyword.length)),
         ],
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.settings_outlined,
-              color: AppColors.textSecondary, size: 20),
-          onPressed: () {},
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: AppColors.bgBase,
+      elevation: 0,
+      leadingWidth: 48,
+      leading: IconButton(
+        icon: Icon(Icons.menu_rounded, color: AppColors.textPrimary, size: 24),
+        onPressed: () => Get.back(),
+      ),
+      title: Text(
+        'AI Chemistry Tutor',
+        style: TextStyle(
+          color: AppColors.purple,
+          fontSize: 18,
+          fontWeight: FontWeight.w800,
         ),
-        Padding(
-          padding: const EdgeInsets.only(right: 12),
-          child: Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: AppColors.bgCard,
-              border: Border.all(color: AppColors.borderDefault),
-            ),
-            child: const Icon(Icons.person_outline,
-                color: AppColors.textSecondary, size: 16),
-          ),
+      ),
+      actions: [
+        Obx(() => Container(
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.green.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.green.withOpacity(0.3)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.star_rounded, color: AppColors.green, size: 16),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${controller.score.value}',
+                    style: TextStyle(
+                      color: AppColors.green,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ],
+              ),
+            )),
+        IconButton(
+          icon: Icon(Icons.notifications_outlined,
+              color: AppColors.textSecondary, size: 22),
+          onPressed: () {},
         ),
       ],
     );
   }
 }
 
-class _MolecularPainter extends CustomPainter {
+// ── Bird hint row ─────────────────────────────────────────────────────────────
+
+class _BirdHintRow extends StatelessWidget {
+  final String hint;
+  final AppThemeVariant variant;
+
+  const _BirdHintRow({required this.hint, required this.variant});
+
   @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = AppColors.purple.withOpacity(0.25)
-      ..strokeWidth = 1.5
-      ..style = PaintingStyle.stroke;
-
-    final dotPaint = Paint()
-      ..color = AppColors.cyan.withOpacity(0.5)
-      ..style = PaintingStyle.fill;
-
-    final nodes = [
-      Offset(size.width * 0.25, size.height * 0.35),
-      Offset(size.width * 0.45, size.height * 0.55),
-      Offset(size.width * 0.60, size.height * 0.30),
-      Offset(size.width * 0.75, size.height * 0.60),
-      Offset(size.width * 0.35, size.height * 0.70),
-    ];
-    final edges = [
-      [0, 1], [1, 2], [2, 3], [1, 4], [0, 2]
-    ];
-
-    for (final e in edges) {
-      canvas.drawLine(nodes[e[0]], nodes[e[1]], paint);
-    }
-    for (final n in nodes) {
-      canvas.drawCircle(n, 4, dotPaint);
-    }
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Bird avatar circle
+        Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.purpleDim,
+            border: Border.all(color: AppColors.purple.withOpacity(0.4), width: 2),
+          ),
+          child: ClipOval(child: MascotBird(variant: variant, size: 44)),
+        ),
+        const SizedBox(width: 10),
+        // Speech bubble
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+            decoration: BoxDecoration(
+              color: AppColors.bgCard,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(4),
+                topRight: Radius.circular(16),
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
+              border: Border.all(color: AppColors.purple.withOpacity(0.2)),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.purple.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Text(
+              '"$hint"',
+              style: TextStyle(
+                color: AppColors.textSecondary,
+                fontSize: 12.5,
+                height: 1.5,
+                fontStyle: FontStyle.italic,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
   }
-
-  @override
-  bool shouldRepaint(_) => false;
 }
