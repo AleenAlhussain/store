@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../core/controllers/theme_controller.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
+import 'theme/app_colors.dart';
 import 'theme/app_theme.dart';
 
 class ChemAIApp extends StatelessWidget {
@@ -17,7 +18,9 @@ class ChemAIApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         darkTheme: AppTheme.dark,
-        themeMode: tc.isDark.value ? ThemeMode.dark : ThemeMode.light,
+        themeMode: tc.variant.value == AppThemeVariant.quantum
+            ? ThemeMode.dark
+            : ThemeMode.light,
         initialRoute: AppRoutes.splash,
         getPages: AppPages.routes,
         defaultTransition: Transition.fadeIn,

@@ -40,8 +40,8 @@ class OnboardingView extends GetView<OnboardingController> {
           Column(
             children: [
               // ── Illustration area (top 60%) ─────────────────────────────
-              SizedBox(
-                height: size.height * 0.60,
+              Expanded(
+                flex: 3,
                 child: PageView.builder(
                   controller: controller.pageController,
                   onPageChanged: (i) => controller.pageIndex.value = i,
@@ -54,6 +54,7 @@ class OnboardingView extends GetView<OnboardingController> {
 
               // ── Bottom sheet ────────────────────────────────────────────
               Expanded(
+                flex: 2,
                 child: Container(
                   width: double.infinity,
                   decoration: const BoxDecoration(
@@ -102,19 +103,20 @@ class OnboardingView extends GetView<OnboardingController> {
 
                       const SizedBox(height: 24),
 
-                      // Page indicator
-                      Obx(() => SmoothPageIndicator(
-                            controller: controller.pageController,
-                            count: controller.pages.length,
-                            effect: const ExpandingDotsEffect(
-                              dotHeight: 6,
-                              dotWidth: 6,
-                              expansionFactor: 4,
-                              activeDotColor: AppColors.purple,
-                              dotColor: AppColors.borderDefault,
-                              spacing: 6,
-                            ),
-                          )),
+                      // Page indicator — SmoothPageIndicator listens to
+                      // PageController natively; no Obx needed here.
+                      SmoothPageIndicator(
+                        controller: controller.pageController,
+                        count: controller.pages.length,
+                        effect: ExpandingDotsEffect(
+                          dotHeight: 6,
+                          dotWidth: 6,
+                          expansionFactor: 4,
+                          activeDotColor: AppColors.purple,
+                          dotColor: AppColors.borderDefault,
+                          spacing: 6,
+                        ),
+                      ),
 
                       const SizedBox(height: 28),
 
