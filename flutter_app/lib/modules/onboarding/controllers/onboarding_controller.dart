@@ -71,6 +71,7 @@ class OnboardingController extends GetxController {
   Future<void> _finish() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_done', true);
-    Get.offAllNamed(AppRoutes.mentor);
+    final loggedIn = prefs.getBool('logged_in') ?? false;
+    Get.offAllNamed(loggedIn ? AppRoutes.mentor : AppRoutes.auth);
   }
 }

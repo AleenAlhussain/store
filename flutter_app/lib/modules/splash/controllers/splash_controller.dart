@@ -50,10 +50,10 @@ class SplashController extends GetxController {
     final onboarded = prefs.getBool('onboarding_done') ?? false;
     final mentorSet = prefs.getString('mentor_id') != null;
 
-    if (!loggedIn) {
-      Get.offAllNamed(AppRoutes.auth);
-    } else if (!onboarded) {
+    if (!onboarded) {
       Get.offAllNamed(AppRoutes.onboarding);
+    } else if (!loggedIn) {
+      Get.offAllNamed(AppRoutes.auth);
     } else if (!mentorSet) {
       Get.offAllNamed(AppRoutes.mentor);
     } else {

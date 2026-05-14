@@ -30,7 +30,7 @@ class AuthController extends GetxController {
     await prefs.setBool('logged_in', true);
     await prefs.remove('mentor_id');
     isLoading.value = false;
-    Get.offAllNamed(AppRoutes.onboarding);
+    Get.offAllNamed(AppRoutes.mentor);
   }
 
   void togglePasswordVisibility() =>
