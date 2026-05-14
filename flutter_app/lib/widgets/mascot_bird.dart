@@ -63,7 +63,7 @@ class _BirdPainter extends CustomPainter {
 
   const _BirdPainter({required this.variant});
 
-  Color get _body => switch (variant) {
+  Color get _bodyColor => switch (variant) {
         AppThemeVariant.quantum => const Color(0xFFEDE9FF),
         AppThemeVariant.luna    => const Color(0xFFFFB7D5),
         AppThemeVariant.milo    => const Color(0xFF86EFAC),
@@ -103,8 +103,8 @@ class _BirdPainter extends CustomPainter {
   }
 
   void _body(Canvas canvas, double cx, double cy, double r) {
-    final hi = Color.lerp(_body, Colors.white, 0.55)!;
-    final lo = Color.lerp(_body, _accent, 0.20)!;
+    final hi = Color.lerp(_bodyColor, Colors.white, 0.55)!;
+    final lo = Color.lerp(_bodyColor, _accent, 0.20)!;
     canvas.drawCircle(
       Offset(cx, cy),
       r,
@@ -112,7 +112,7 @@ class _BirdPainter extends CustomPainter {
         ..shader = RadialGradient(
           center: const Alignment(-0.35, -0.45),
           radius: 0.90,
-          colors: [hi, _body, lo],
+          colors: [hi, _bodyColor, lo],
           stops: const [0.0, 0.5, 1.0],
         ).createShader(Rect.fromCircle(center: Offset(cx, cy), radius: r)),
     );
@@ -130,7 +130,7 @@ class _BirdPainter extends CustomPainter {
     canvas.drawOval(
       Rect.fromCenter(
           center: Offset(cx, cy + r * 0.22), width: r * 1.06, height: r * 0.86),
-      Paint()..color = Color.lerp(_body, Colors.white, 0.48)!,
+      Paint()..color = Color.lerp(_bodyColor, Colors.white, 0.48)!,
     );
   }
 
@@ -230,7 +230,7 @@ class _BirdPainter extends CustomPainter {
   }
 
   void _tufts(Canvas canvas, double cx, double cy, double r) {
-    final tc = Color.lerp(_body, _accent, 0.38)!;
+    final tc = Color.lerp(_bodyColor, _accent, 0.38)!;
     final tp = Paint()..color = tc;
     final topY = cy - r * 0.84;
 
