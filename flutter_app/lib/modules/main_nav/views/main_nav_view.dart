@@ -26,7 +26,7 @@ class MainNavView extends GetView<MainNavController> {
   Widget build(BuildContext context) {
     final tc = Get.find<ThemeController>();
     return Obx(() {
-      tc.isDark.value; // subscribe — triggers full rebuild on theme toggle
+      tc.variant.value; // subscribe — triggers full rebuild on theme change
       return Scaffold(
         backgroundColor: AppColors.bgBase,
         body: IndexedStack(

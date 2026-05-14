@@ -30,8 +30,8 @@ class PilotProfileController extends GetxController {
       ];
 
   void handleSettingTap(String icon) {
-    if (icon == 'theme') _theme.toggle();
     if (icon == 'mentor') Get.toNamed(AppRoutes.mentor);
+    // 'theme' is handled directly by the view (opens picker sheet)
   }
 
   Future<void> disconnect() async {

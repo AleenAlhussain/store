@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../app/theme/app_colors.dart';
+import '../../../core/controllers/theme_controller.dart';
 import '../../../widgets/flask_logo.dart';
 import '../controllers/pilot_profile_controller.dart';
 
@@ -221,7 +222,13 @@ class PilotProfileView extends GetView<PilotProfileController> {
                           label: s.label,
                           trailing: s.trailing,
                           showDivider: !isLast,
-                          onTap: () => controller.handleSettingTap(s.icon),
+                          onTap: s.icon == 'theme'
+                              ? () => Get.bottomSheet(
+                                    const _ThemePickerSheet(),
+                                    isScrollControlled: true,
+                                    backgroundColor: Colors.transparent,
+                                  )
+                              : () => controller.handleSettingTap(s.icon),
                         );
                       },
                     ),
@@ -352,6 +359,169 @@ class _SettingsRow extends StatelessWidget {
               color: AppColors.borderDefault,
               indent: 48),
       ],
+    );
+  }
+}
+
+// ── Theme picker bottom sheet ─────────────────────────────────────────────────
+class _ThemePickerSheet extends StatelessWidget {
+  const _ThemePickerSheet();
+
+  static const _themes = [
+    (
+      variant: AppThemeVariant.quantum,
+      emoji: '🌌',
+      name: 'Quantum',
+      sub: 'Dark mode',
+      accent: Color(0xFF8B7DF8),
+      bg: Color(0xFF0C0F2A),
+    ),
+    (
+      variant: AppThemeVariant.luna,
+      emoji: '🌸',
+      name: 'Luna',
+      sub: 'For girls',
+      accent: Color(0xFFEC4899),
+      bg: Color(0xFFFFF5FA),
+    ),
+    (
+      variant: AppThemeVariant.milo,
+      emoji: '🌿',
+      name: 'Milo',
+      sub: 'For boys',
+      accent: Color(0xFF16A34A),
+      bg: Color(0xFFF5FFF7),
+    ),
+    (
+      variant: AppThemeVariant.sunny,
+      emoji: '☀️',
+      name: 'Sunny',
+      sub: 'Loves to explain',
+      accent: Color(0xFFD97706),
+      bg: Color(0xFFFFFDF0),
+    ),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final tc = Get.find<ThemeController>();
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.bgCard,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border.all(color: AppColors.borderDefault),
+      ),
+      padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Handle bar
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: AppColors.borderDefault,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            'CHOOSE THEME',
+            style: TextStyle(
+              color: AppColors.textPrimary,
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 2,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            'Personalise your learning environment',
+            style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+          ),
+          const SizedBox(height: 20),
+          Obx(() {
+            final current = tc.variant.value;
+            return GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 12,
+              crossAxisSpacing: 12,
+              childAspectRatio: 1.4,
+              children: _themes.map((t) {
+                final selected = current == t.variant;
+                return GestureDetector(
+                  onTap: () {
+                    tc.setVariant(t.variant);
+                    Get.back();
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    decoration: BoxDecoration(
+                      color: t.bg,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(
+                        color: selected ? t.accent : t.bg,
+                        width: 2.5,
+                      ),
+                      boxShadow: selected
+                          ? [
+                              BoxShadow(
+                                color: t.accent.withOpacity(0.25),
+                                blurRadius: 12,
+                                spreadRadius: 1,
+                              )
+                            ]
+                          : [],
+                    ),
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(t.emoji,
+                                style: const TextStyle(fontSize: 20)),
+                            const Spacer(),
+                            if (selected)
+                              Container(
+                                width: 18,
+                                height: 18,
+                                decoration: BoxDecoration(
+                                  color: t.accent,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.check,
+                                    color: Colors.white, size: 12),
+                              ),
+                          ],
+                        ),
+                        const Spacer(),
+                        Text(
+                          t.name,
+                          style: TextStyle(
+                            color: t.accent,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                        Text(
+                          t.sub,
+                          style: TextStyle(
+                            color: t.accent.withOpacity(0.7),
+                            fontSize: 11,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            );
+          }),
+        ],
+      ),
     );
   }
 }

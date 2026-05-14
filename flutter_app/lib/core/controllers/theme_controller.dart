@@ -4,7 +4,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../app/theme/app_colors.dart';
 
 class ThemeController extends GetxController {
-  final isDark = true.obs;
+  final variant = AppThemeVariant.quantum.obs;
+
+  bool get isDark => variant.value == AppThemeVariant.quantum;
+
+  String get label => switch (variant.value) {
+        AppThemeVariant.quantum => 'QUANTUM',
+        AppThemeVariant.luna    => 'LUNA',
+        AppThemeVariant.milo    => 'MILO',
+        AppThemeVariant.sunny   => 'SUNNY',
+      };
 
   @override
   void onInit() {
@@ -12,25 +21,29 @@ class ThemeController extends GetxController {
     _load();
   }
 
-  void toggle() {
-    isDark.toggle();
-    AppColors.isDark = isDark.value;
-    Get.changeThemeMode(isDark.value ? ThemeMode.dark : ThemeMode.light);
-    _save(isDark.value);
+  void setVariant(AppThemeVariant v) {
+    variant.value = v;
+    AppColors.variant = v;
+    Get.changeThemeMode(
+        v == AppThemeVariant.quantum ? ThemeMode.dark : ThemeMode.light);
+    _save(v);
   }
-
-  String get label => isDark.value ? 'DARK' : 'LIGHT';
 
   Future<void> _load() async {
     final prefs = await SharedPreferences.getInstance();
-    final dark = prefs.getBool('theme_is_dark') ?? true;
-    isDark.value = dark;
-    AppColors.isDark = dark;
-    Get.changeThemeMode(dark ? ThemeMode.dark : ThemeMode.light);
+    final name = prefs.getString('theme_variant') ?? 'quantum';
+    final v = AppThemeVariant.values.firstWhere(
+      (e) => e.name == name,
+      orElse: () => AppThemeVariant.quantum,
+    );
+    variant.value = v;
+    AppColors.variant = v;
+    Get.changeThemeMode(
+        v == AppThemeVariant.quantum ? ThemeMode.dark : ThemeMode.light);
   }
 
-  Future<void> _save(bool dark) async {
+  Future<void> _save(AppThemeVariant v) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('theme_is_dark', dark);
+    await prefs.setString('theme_variant', v.name);
   }
 }
