@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import '../../../app/theme/app_colors.dart';
 import '../controllers/home_controller.dart';
 import 'widgets/level_card.dart';
+import 'widgets/mascot_card.dart';
 import 'widgets/mission_card.dart';
 import 'widgets/quick_action_grid.dart';
 
@@ -92,7 +93,12 @@ class HomeView extends GetView<HomeController> {
                 ),
               ).animate().fadeIn(delay: 80.ms, duration: 400.ms),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+
+              // Mascot card
+              const MascotCard(),
+
+              const SizedBox(height: 16),
 
               // Level card
               LevelCard(user: user)
