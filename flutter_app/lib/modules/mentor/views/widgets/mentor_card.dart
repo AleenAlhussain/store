@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../../app/theme/app_colors.dart';
 import '../../../../data/models/mentor_model.dart';
+import '../../../../widgets/mascot_bird.dart';
 
 class MentorCard extends StatelessWidget {
   final MentorModel mentor;
@@ -18,98 +19,127 @@ class MentorCard extends StatelessWidget {
     required this.index,
   });
 
+  Color _accentFor(AppThemeVariant v) => switch (v) {
+        AppThemeVariant.quantum => const Color(0xFF8B7DF8),
+        AppThemeVariant.luna    => const Color(0xFFEC4899),
+        AppThemeVariant.milo    => const Color(0xFF16A34A),
+        AppThemeVariant.sunny   => const Color(0xFFD97706),
+      };
+
+  Color _bgFor(AppThemeVariant v) => switch (v) {
+        AppThemeVariant.quantum => const Color(0xFFEDE9FF),
+        AppThemeVariant.luna    => const Color(0xFFFFF0F8),
+        AppThemeVariant.milo    => const Color(0xFFF0FFF4),
+        AppThemeVariant.sunny   => const Color(0xFFFFFBEB),
+      };
+
   @override
   Widget build(BuildContext context) {
+    final v = mentor.themeVariant;
+    final accent = _accentFor(v);
+    final bg = _bgFor(v);
+
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOut,
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.purple.withOpacity(0.15)
-              : AppColors.bgCard,
-          borderRadius: BorderRadius.circular(14),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
           border: Border.all(
-            color: isSelected ? AppColors.borderSelected : AppColors.borderDefault,
-            width: isSelected ? 1.5 : 1,
+            color: isSelected ? accent : accent.withOpacity(0.18),
+            width: isSelected ? 2.5 : 1.5,
           ),
-          boxShadow: isSelected
-              ? [
-                  BoxShadow(
-                    color: AppColors.purple.withOpacity(0.25),
-                    blurRadius: 12,
-                    spreadRadius: 0,
-                  )
-                ]
-              : null,
+          boxShadow: [
+            BoxShadow(
+              color: isSelected
+                  ? accent.withOpacity(0.20)
+                  : Colors.black.withOpacity(0.05),
+              blurRadius: isSelected ? 16 : 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        padding: const EdgeInsets.all(14),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              children: [
-                // Icon
-                Container(
-                  width: 36,
-                  height: 36,
-                  decoration: BoxDecoration(
-                    color: isSelected
-                        ? AppColors.purple.withOpacity(0.25)
-                        : AppColors.bgCardAlt,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Text(
-                      mentor.iconAsset,
-                      style: const TextStyle(fontSize: 16),
+            // ── Coloured top section with bird ─────────────────────────
+            Container(
+              width: double.infinity,
+              height: 130,
+              decoration: BoxDecoration(
+                color: bg,
+                borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(20)),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Faint character initial watermark
+                  Text(
+                    mentor.name[0],
+                    style: TextStyle(
+                      color: accent.withOpacity(0.07),
+                      fontSize: 110,
+                      fontWeight: FontWeight.w900,
                     ),
                   ),
-                ),
-                const Spacer(),
-                // Checkmark
-                if (isSelected)
+                  MascotBird(variant: v, size: 96),
+                ],
+              ),
+            ),
+
+            // ── Info section ──────────────────────────────────────────
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
+              child: Column(
+                children: [
+                  Text(
+                    mentor.name,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: accent,
+                      fontSize: 22,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
                   Container(
-                    width: 20,
-                    height: 20,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: AppColors.borderSelected,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: accent.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.check,
-                        color: Colors.white, size: 12),
+                    child: Text(
+                      mentor.role,
+                      style: TextStyle(
+                        color: accent,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(
-              mentor.name,
-              style: TextStyle(
-                color: isSelected
-                    ? AppColors.textPrimary
-                    : AppColors.textPrimary,
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
+                  const SizedBox(height: 10),
+                  Text(
+                    mentor.description,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: const Color(0xFF6B7280),
+                      fontSize: 13,
+                      height: 1.5,
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              mentor.description,
-              style: const TextStyle(
-                color: AppColors.textSecondary,
-                fontSize: 11,
-                height: 1.4,
-              ),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
       )
           .animate(delay: Duration(milliseconds: 80 * index))
-          .fadeIn(duration: 400.ms)
-          .slideY(begin: 0.15, duration: 400.ms, curve: Curves.easeOut),
+          .fadeIn(duration: 450.ms)
+          .slideY(begin: 0.12, duration: 450.ms, curve: Curves.easeOut),
     );
   }
 }

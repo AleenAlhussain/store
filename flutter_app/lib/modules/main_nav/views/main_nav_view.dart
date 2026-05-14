@@ -52,10 +52,10 @@ class _QuantumNavBar extends StatelessWidget {
 
   // Items for positions 0,1 and 3,4 — position 2 is the special center button.
   static const _sideItems = [
-    (idx: 0, icon: Icons.home_outlined, label: 'HOME'),
-    (idx: 1, icon: Icons.school_outlined, label: 'LESSONS'),
-    (idx: 3, icon: Icons.science_outlined, label: 'LAB'),
-    (idx: 4, icon: Icons.person_outline, label: 'PROFILE'),
+    (idx: 0, icon: Icons.home_outlined, label: 'Home'),
+    (idx: 1, icon: Icons.menu_book_outlined, label: 'Topics'),
+    (idx: 3, icon: Icons.bar_chart_rounded, label: 'Progress'),
+    (idx: 4, icon: Icons.person_outline, label: 'Profile'),
   ];
 
   @override
@@ -144,8 +144,8 @@ class _NavItem extends StatelessWidget {
               label,
               style: TextStyle(
                 color: isActive ? AppColors.purple : AppColors.textMuted,
-                fontSize: 8,
-                letterSpacing: 0.8,
+                fontSize: 9,
+                letterSpacing: 0.2,
                 fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
               ),
             ),
@@ -197,7 +197,7 @@ class _CompanionNavButton extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'BUDDY',
+            'Tutor',
             style: TextStyle(
               color: isActive ? AppColors.purple : AppColors.textMuted,
               fontSize: 8,
